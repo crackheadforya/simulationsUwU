@@ -1,4 +1,4 @@
-import pygame,sys,pymunk,time
+import pygame,sys,pymunk,time,random
 from buttons import Button
 
 class simulation():
@@ -40,23 +40,20 @@ class simulation():
             self.screen.blit(self.background,(0,0))
             self.check_events()
             #self.screen.fill((217,217,217))
-            self.xincremnetbutton = Button(image = pygame.image.load("assets/xincrement.png"),pos=(1010,20))
+            self.xincremnetbutton = Button(image = pygame.image.load("assets/xincrement.png"),pos=(450,950))
             self.xincremnetbutton.update(self.screen)
-            self.xdecrementbutton = Button(image = pygame.image.load("assets/xdecrement.png"),pos=(1010,75))
+            self.xdecrementbutton = Button(image = pygame.image.load("assets/xdecrement.png"),pos=(550,950))
             self.xdecrementbutton.update(self.screen)
-            self.yincrementbutton = Button(image = pygame.image.load("assets/yincrement.png"),pos=(1010,130))
+            self.yincrementbutton = Button(image = pygame.image.load("assets/yincrement.png"),pos=(650,950))
             self.yincrementbutton.update(self.screen)
-            self.ydecrementbutton = Button(image = pygame.image.load("assets/ydecrement.png"),pos=(1010,185))
+            self.ydecrementbutton = Button(image = pygame.image.load("assets/ydecrement.png"),pos=(750,950))
             self.ydecrementbutton.update(self.screen)
+            self.resetbutton = Button(image = pygame.image.load("assets/reset.png"),pos=(850,950))
+            self.resetbutton.update(self.screen)
             self.draw_body(self.bodies)
             self.draw_obstacles(self.obstacles)
             pygame.display.update()
-            
-
             self.space.step(1/50)
-            
-            
-            
     def check_events(self):
         self.clock.tick(60)
         
@@ -68,21 +65,43 @@ class simulation():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.playing = False
+                if event.key == pygame.K_UP:
+                    self.ygravitylmao-=10
+                    print("y gravity = ",self.space.gravity[1])
+                if event.key == pygame.K_DOWN:
+                    self.ygravitylmao+=10
+                    print("y gravity = ",self.space.gravity[1])
+                if event.key == pygame.K_LEFT:
+                    self.xgravitylmao-=10
+                    print("x gravity = ",self.space.gravity[0])
+                if event.key == pygame.K_RIGHT:
+                    self.xgravitylmao+=10
+                    print("x gravity = ",self.space.gravity[0])
+                if event.key == pygame.K_SPACE:
+                    self.randomspawnx=random.randrange(100,900)
+                    self.randomspawny=random.randrange(100,900)
+                    self.bodies.append(self.create_body(self.space,(self.randomspawnx,self.randomspawny)))
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.xincremnetbutton.check_for_input(pygame.mouse.get_pos()):
                     self.xgravitylmao+=10
                     print("x gravity = ",self.space.gravity[0])
-                if self.xdecrementbutton.check_for_input(pygame.mouse.get_pos()):
+                elif self.xdecrementbutton.check_for_input(pygame.mouse.get_pos()):
                     self.xgravitylmao-=10
                     print("x gravity = ",self.space.gravity[0])
-                if self.yincrementbutton.check_for_input(pygame.mouse.get_pos()):
+                elif self.yincrementbutton.check_for_input(pygame.mouse.get_pos()):
                     self.ygravitylmao+=10
                     print("y gravity = ",self.space.gravity[1])
-                if self.ydecrementbutton.check_for_input(pygame.mouse.get_pos()):
+                elif self.ydecrementbutton.check_for_input(pygame.mouse.get_pos()):
                     self.ygravitylmao-=10
                     print("y gravity = ",self.space.gravity[1])
+                elif self.resetbutton.check_for_input(pygame.mouse.get_pos()):
+                    self.ygravitylmao,self.xgravitylmao=0,0
+                    print("y gravity = ",self.space.gravity[1])
+                    print("x gravity = ",self.space.gravity[0])
                 #print(pygame.mouse.get_pos())
-                self.bodies.append(self.create_body(self.space,event.pos))#pygame.mouse.get_pos()))
+                else:
+                    self.bodies.append(self.create_body(self.space,event.pos))#pygame.mouse.get_pos()))
 
                 
     def create_body(self,space,spawnposition):
@@ -101,13 +120,13 @@ class simulation():
         for self.obstacle in obstacles:
             self.pos_x=int(self.obstacle.body.position.x)
             self.pos_y=int(self.obstacle.body.position.y)
-            pygame.draw.circle(self.screen,(255,87,51),(self.pos_x,self.pos_y),50)
+            pygame.draw.circle(self.screen,(255,255,255),(self.pos_x,self.pos_y),50)
 
     def draw_body(self,bodies):
         for self.boday in bodies:
             self.pos_x=int(self.boday.body.position.x)
             self.pos_y=int(self.boday.body.position.y)
-            pygame.draw.circle(self.screen,(81,195,210),(self.pos_x,self.pos_y),20)
+            pygame.draw.circle(self.screen,(238,173,22),(self.pos_x,self.pos_y),20)
 
 
 
